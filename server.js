@@ -60,6 +60,20 @@ app.get("/workexperience", async (req, res) => {
         return res.status(500).json(error); 
     }
 
+}); 
+
+app.post("/workexperience", async (req, res) => {
+
+    try {
+
+        let result = await Workexperience.create(req.body); 
+        return res.status(201).json(result); 
+
+    } catch(error) {
+
+        return res.status(400).json(error); 
+
+    }
 })
 
 app.listen(port, () => {
