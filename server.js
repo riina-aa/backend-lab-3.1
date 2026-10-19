@@ -115,6 +115,7 @@ app.delete("/workexperience/:id", async (req, res) => {
     }
 })
 
+//startar server
 app.listen(port, () => {
     console.log("Server is running on port: " + port);
 }); 
