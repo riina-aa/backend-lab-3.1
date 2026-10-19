@@ -8,8 +8,6 @@ const port = 5468;
 app.use(cors());
 app.use(express.json());
 
-console.log("Detta är server.js");
-
 //Ansluter till MongoDb
 mongoose.connect("mongodb://localhost:27017/workexperience-lab-3").then(() => {
     console.log("Connected to MongoDb")
@@ -21,11 +19,13 @@ mongoose.connect("mongodb://localhost:27017/workexperience-lab-3").then(() => {
 const workexperienceSchema = new mongoose.Schema({
     companyName: {
         type: String,
-        required: [true, "Företagsnamn får inte vara tomt"]
+        required: [true, "Företagsnamn får inte vara tomt"],
+        trim: true
     },
     jobTitle: {
         type: String,
-        required: [true, "Jobtitel får inte vara tomt"]
+        required: [true, "Jobtitel får inte vara tomt"],
+        trim: true
     },
     location: {
         type: String,
@@ -81,7 +81,7 @@ app.put("/workexperience/:id", async (req, res) => {
     const { companyName, jobTitle, location, startDate, endDate, description } = req.body;
 
     try {
-        let result = await Workexperience.updateOne(
+        await Workexperience.updateOne(
             { _id: req.params.id },
             {
                 $set: {
@@ -91,12 +91,15 @@ app.put("/workexperience/:id", async (req, res) => {
                     startDate: startDate,
                     endDate: endDate,
                     description: description
-                },
-            });
-        res.json({message: "Arbetserfarenheten har uppdaterats"})
+                }
+            }, 
+            { runValidators: true }
+        );
+
+        res.status(200).json({message: "Arbetserfarenheten har uppdaterats"})
 
     } catch (error) {
-        res.json({message: "Något gick fel" + error})
+        res.status(400).json({message: "Något gick fel: " + error})
     }
 
 })
